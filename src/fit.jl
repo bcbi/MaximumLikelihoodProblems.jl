@@ -5,7 +5,7 @@ import TransformVariables
 const default_learning_rate = 1e-4
 const default_max_iterations = 1_000_000
 const default_show_progress_meter = true
-const default_throw_convergence_exception = false
+const default_throw_convergence_exception = true
 const default_tolerance = 1e-10
 
 function fit(transformed_gradient_problem,
