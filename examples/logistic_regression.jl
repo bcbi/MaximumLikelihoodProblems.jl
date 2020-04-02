@@ -1,3 +1,5 @@
+# # Logistic regression
+
 import MaximumLikelihoodProblems
 
 import Distributions
@@ -39,7 +41,11 @@ transformed_gradient_problem = LogDensityProblems.ADgradient(:ForwardDiff,
 β_hat_initial_guess = zeros(size_β)
 θ_hat_initial = (; β = β_hat_initial_guess)
 
+# θ_hat:
+
 θ_hat = MaximumLikelihoodProblems.fit(transformed_gradient_problem,
                                       θ_hat_initial)
+
+# β_hat:
 
 β_hat = θ_hat[:β]

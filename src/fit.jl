@@ -8,6 +8,22 @@ const default_show_progress_meter = true
 const default_throw_convergence_exception = true
 const default_tolerance = 1e-10
 
+"""
+    fit(transformed_gradient_problem, theta_hat_initial; kwargs...)
+
+# Arguments
+- `transformed_gradient_problem`
+- `theta_hat_initial`
+
+# Keyword Arguments
+- `learning_rate`. Default value: $(default_learning_rate)
+- `max_iterations`. Default value: $(default_max_iterations)
+- `show_progress_meter`. Default value: $(default_show_progress_meter)
+- `throw_convergence_exception`. Default value: $(default_throw_convergence_exception)
+- `tolerance`. Default value: $(default_tolerance)
+
+See the documentation for fully worked-out examples.
+"""
 function fit(transformed_gradient_problem,
              theta_hat_initial;
              learning_rate = default_learning_rate,
