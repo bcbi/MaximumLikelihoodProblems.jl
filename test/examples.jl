@@ -1,7 +1,9 @@
+import Random
 import Test
 
 Test.@testset "examples" begin
     Test.@testset "linear regression" begin
+        Random.seed!(123)
         include(joinpath(examples_directory,
                          "linear_regression.jl"))
         include(joinpath(test_directory,
@@ -10,6 +12,7 @@ Test.@testset "examples" begin
     end
 
     Test.@testset "logistic regression" begin
+        Random.seed!(123)
         include(joinpath(examples_directory,
                          "logistic_regression.jl"))
         include(joinpath(test_directory,
@@ -18,6 +21,7 @@ Test.@testset "examples" begin
     end
 
     Test.@testset "multinomial logistic regression" begin
+        Random.seed!(123)
         include(joinpath(examples_directory,
                          "multinomial_logistic_regression.jl"))
         include(joinpath(test_directory,

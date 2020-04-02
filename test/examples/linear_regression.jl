@@ -4,6 +4,11 @@ import Test
 σ_true = 0.5
 β_true = [1.0, 2.0, -1.0]
 
+@show σ_true
+@show σ_hat
+@show β_true
+@show β_hat
+
 Test.@test typeof(σ_hat) == typeof(σ_true)
 Test.@test σ_hat isa Real
 Test.@test σ_true isa Real
