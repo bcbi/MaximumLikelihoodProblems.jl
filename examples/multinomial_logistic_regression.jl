@@ -49,8 +49,7 @@ transformed_gradient_problem = LogDensityProblems.ADgradient(:ForwardDiff,
 # θ_hat:
 
 θ_hat = MaximumLikelihoodProblems.fit(transformed_gradient_problem,
-                                      θ_hat_initial;
-                                      show_progress_meter = false)
+                                      θ_hat_initial)
 
 # β_hat:
 
