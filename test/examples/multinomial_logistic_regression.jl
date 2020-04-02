@@ -17,8 +17,8 @@ Test.@test sum(absolute_error_proportional) < 0.35
 Test.@test sum(square_error_proportional) < 0.03
 Test.@test maximum(absolute_error) < 0.30
 Test.@test maximum(square_error) < 0.05
-Test.@test maximum(absolute_error_proportional) < 0.10
-Test.@test maximum(square_error_proportional) < 0.01
+Test.@test maximum(absolute_error_proportional) < 0.20
+Test.@test maximum(square_error_proportional) < 0.03
 Test.@test Statistics.mean(absolute_error) < 0.95
 Test.@test Statistics.mean(square_error) < 0.0095
 Test.@test Statistics.mean(absolute_error_proportional) < 0.05
