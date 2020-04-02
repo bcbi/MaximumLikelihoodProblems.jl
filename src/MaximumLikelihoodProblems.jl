@@ -1,5 +1,9 @@
 module MaximumLikelihoodProblems
 
-greet() = print("Hello World!")
+include("public.jl")
+
+include("types.jl")
+
+include("fit.jl")
 
 end # module
