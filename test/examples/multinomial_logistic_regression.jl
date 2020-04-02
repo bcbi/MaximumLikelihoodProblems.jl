@@ -36,8 +36,14 @@ Test.@test Statistics.mean(square_error_proportional) < 0.0055
                                       max_iterations = 10,
                                       throw_convergence_exception = false)
 @info("The previous warning message (\"Warning: Failed to converge after 10 iterations\") was expected. It is a normal part of the test suite.")
-Test.@test_throws MaximumLikelihoodProblems.ConvergenceException MaximumLikelihoodProblems.fit(transformed_gradient_problem,
-                                                                 θ_hat_initial;
-                                                                 max_iterations = 10,
-                                                                 throw_convergence_exception = true)
+Test.@test_throws(MaximumLikelihoodProblems.ConvergenceException,
+                  MaximumLikelihoodProblems.fit(transformed_gradient_problem,
+                                                θ_hat_initial;
+                                                max_iterations = 10,
+                                                throw_convergence_exception = true))
+@info("The previous error message (\"Error: Failed to converge after 10 iterations\") was expected. It is a normal part of the test suite.")
+Test.@test_throws(MaximumLikelihoodProblems.ConvergenceException,
+                  MaximumLikelihoodProblems.fit(transformed_gradient_problem,
+                                                θ_hat_initial;
+                                                max_iterations = 10))
 @info("The previous error message (\"Error: Failed to converge after 10 iterations\") was expected. It is a normal part of the test suite.")
