@@ -24,12 +24,13 @@ Test.@test Statistics.mean(square_error) < 0.0095
 Test.@test Statistics.mean(absolute_error_proportional) < 0.05
 Test.@test Statistics.mean(square_error_proportional) < 0.0055
 
-# coverage for the "failed to converge" code path
+# coverage for the "failed to converge" code paths
 β_hat_initial_guess = zeros(size_β)
 θ_hat_initial = (; β = β_hat_initial_guess)
 θ_hat = MaximumLikelihoodProblems.fit(transformed_gradient_problem,
                                       θ_hat_initial;
-                                      max_iterations = 10)
+                                      max_iterations = 10,
+                                      throw_convergence_exception = false)
 @info("The previous warning message (\"Warning: Failed to converge after 10 iterations\") was expected. It is a normal part of the test suite.")
 Test.@test_throws MaximumLikelihoodProblems.ConvergenceException MaximumLikelihoodProblems.fit(transformed_gradient_problem,
                                                                  θ_hat_initial;
