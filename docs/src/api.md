@@ -8,6 +8,5 @@ end
 
 ## Methods
 ```@docs
-MaximumLikelihoodProblems
 MaximumLikelihoodProblems.fit
 ```
