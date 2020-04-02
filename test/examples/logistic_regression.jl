@@ -2,6 +2,10 @@ import Statistics
 import Test
 
 β_true = [1.0, 2.0]
+
+@show β_true
+@show β_hat
+
 Test.@test typeof(β_hat) == typeof(β_true)
 Test.@test ndims(β_hat) == ndims(β_true)
 Test.@test size(β_hat) == size(β_true)
