@@ -9,7 +9,7 @@ branches:
 language: julia
 os:
   - linux
-  - osx
+  # - osx
 julia:
   - 1.3
   - nightly
