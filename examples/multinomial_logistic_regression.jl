@@ -66,7 +66,7 @@ transformed_gradient_problem = LogDensityProblems.ADgradient(:ForwardDiff,
 
 β_hat = θ_hat[:β]
 
-# β_hat_with_base_class:
+# β\_hat\_with\_base\_class:
 
 num_covariates = size(β_hat, 1)
 β_hat_with_base_class = hcat(zeros(num_covariates), β_hat)
