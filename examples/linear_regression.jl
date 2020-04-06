@@ -21,11 +21,11 @@ function (problem::LinearRegression)(θ)
     ε = y - μ
 
     ## these two lines are equivalent:
-    ## loglik = Distributions.loglikelihood(Distributions.Normal(0, σ), ε)
-    ## loglik = sum(Distributions.logpdf.(Distributions.Normal(0, σ), ε))
+    ## log_likelihood = Distributions.loglikelihood(Distributions.Normal(0, σ), ε)
+    ## log_likelihood = sum(Distributions.logpdf.(Distributions.Normal(0, σ), ε))
 
-    loglik = sum(Distributions.logpdf.(Distributions.Normal(0, σ), ε))
-    return loglik
+    log_likelihood = sum(Distributions.logpdf.(Distributions.Normal(0, σ), ε))
+    return log_likelihood
 end
 
 N = 10_000
