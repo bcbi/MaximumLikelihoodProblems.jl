@@ -5,7 +5,6 @@ import MaximumLikelihoodProblems
 import Distributions
 import ForwardDiff
 import LogDensityProblems
-import Parameters
 import TransformVariables
 
 struct LinearRegression{Ty, TX}
@@ -14,9 +13,13 @@ struct LinearRegression{Ty, TX}
 end
 
 function (problem::LinearRegression)(θ)
-    Parameters.@unpack y, X = problem
-    Parameters.@unpack β, σ = θ
-    η = X*β
+    y = problem.y
+    X = problem.X
+
+    β = θ.β
+    σ = θ.σ
+
+    η = X * β
     μ = η
     ε = y - μ
 
@@ -30,10 +33,7 @@ end
 
 N = 10_000
 
-## X has three columns
 ## the first column (the column of all ones) is the intercept
-## the second column is the first covariate
-## the third column is the second covariate
 X = hcat(ones(N), randn(N), randn(N))
 
 size_β = (3,)

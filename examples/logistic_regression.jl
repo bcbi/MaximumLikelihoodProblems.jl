@@ -5,7 +5,6 @@ import MaximumLikelihoodProblems
 import Distributions
 import ForwardDiff
 import LogDensityProblems
-import Parameters
 import StatsFuns
 import TransformVariables
 
@@ -15,9 +14,12 @@ struct LogisticRegression{Ty, TX}
 end
 
 function (problem::LogisticRegression)(θ)
-    Parameters.@unpack y, X = problem
-    Parameters.@unpack β = θ
-    η = X*β
+    y = problem.y
+    X = problem.X
+
+    β = θ.β
+
+    η = X * β
     μ = StatsFuns.logistic.(η)
     log_likelihood = sum(Distributions.logpdf.(Distributions.Bernoulli.(μ), y))
     return log_likelihood
@@ -25,9 +27,7 @@ end
 
 N = 10_000
 
-## X has two columns
 ## the first column (the column of all ones) is the intercept
-## the second column is a covariate
 X = hcat(ones(N), randn(N))
 
 size_β = (2,)

@@ -5,7 +5,6 @@ import MaximumLikelihoodProblems
 import Distributions
 import ForwardDiff
 import LogDensityProblems
-import Parameters
 import NNlib
 import TransformVariables
 
@@ -15,14 +14,19 @@ struct MultinomialLogisticRegression{Ty, TX}
 end
 
 function (problem::MultinomialLogisticRegression)(θ)
-    Parameters.@unpack y, X = problem
-    Parameters.@unpack β = θ
-    num_rows, num_covariates = size(X)
+    y = problem.y
+    X = problem.X
+
+    β = θ.β
+
+    num_rows = size(X, 1)
+    num_covariates = size(β, 1) ## `size(β, 1)` is equal to `size(X, 2)`
     num_classes = size(β, 2) + 1
 
     ## the first column of all zeros corresponds to the base class
     ## i.e. the coefficient β₀ for the base class is always fixed to be zero
-    η = X * hcat(zeros(num_covariates), β)
+    β_with_base_class = hcat(zeros(num_covariates), β)
+    η = X * β_with_base_class
 
     μ = NNlib.softmax(η; dims=2)
     log_likelihood = sum([Distributions.logpdf(Distributions.Multinomial(1, μ[i, :]), y[i, :]) for i = 1:num_rows])
@@ -31,14 +35,14 @@ end
 
 N = 10_000
 
-## X has two columns
 ## the first column (the column of all ones) is the intercept
-## the second column is a covariate
 X = hcat(ones(N), randn(N))
 
 size_β = (2, 3)
 β_true = [1.0 2.0 3.0; 4.0 5.0 6.0]
-η_true = X * hcat(zeros(2), β_true)
+num_covariates = size(β_true, 1)
+β_true_with_base_class = hcat(zeros(num_covariates), β_true)
+η_true = X * β_true_with_base_class
 μ_true = NNlib.softmax(η_true; dims=2)
 y = vcat([rand(Distributions.Multinomial(1, μ_true[i,:]))' for i in 1:N]...)
 
@@ -61,3 +65,8 @@ transformed_gradient_problem = LogDensityProblems.ADgradient(:ForwardDiff,
 # β_hat:
 
 β_hat = θ_hat[:β]
+
+# β_hat_with_base_class:
+
+num_covariates = size(β_hat, 1)
+β_hat_with_base_class = hcat(zeros(num_covariates), β_hat)
