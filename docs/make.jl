@@ -29,11 +29,10 @@ Documenter.makedocs(;
     format=Documenter.HTML(),
     pages = vcat(["Home" => "index.md",],
                   ["$(example).md" for example in examples_list],
-                  ["api.md",]),
+                  ["api_public.md",]),
     repo="https://github.com/bcbi/MaximumLikelihoodProblems.jl/blob/{commit}{path}#L{line}",
     sitename="MaximumLikelihoodProblems.jl",
     authors="Dilum P. Aluthge",
-    # assets=String[],
 )
 
 Documenter.deploydocs(;
