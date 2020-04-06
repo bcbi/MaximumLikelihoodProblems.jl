@@ -1,12 +1,15 @@
 import MaximumLikelihoodProblems
 
+import CategoricalArrays
+import DataFrames
+import Econometrics
 import Statistics
 import Test
 
 β_true = [1.0 2.0 3.0; 4.0 5.0 6.0]
 
-@show β_true
-@show β_hat
+# @show β_true
+# @show β_hat
 
 Test.@test typeof(β_hat) == typeof(β_true)
 Test.@test ndims(β_hat) == ndims(β_true)
@@ -27,6 +30,40 @@ Test.@test Statistics.mean(absolute_error) < 0.95
 Test.@test Statistics.mean(square_error) < 0.0095
 Test.@test Statistics.mean(absolute_error_proportional) < 0.05
 Test.@test Statistics.mean(square_error_proportional) < 0.0055
+
+external_df = DataFrames.DataFrame()
+external_df[!, :X_2] = X[:, 2]
+n = size(X, 1)
+external_y_string = Vector{String}(undef, n)
+for i = 1:n
+    external_y_string[i] = string(argmax(y[i, :]))
+end
+external_y_string_categorical = CategoricalArrays.CategoricalArray(external_y_string;
+                                                                   ordered = false)
+external_df[!, :y] = external_y_string_categorical
+external_formula = Econometrics.@formula(y ~ 1 + X_2)
+# external_model_econometrics = Econometrics.fit(Econometrics.EconometricModel,
+                                               # external_formula,
+                                               # external_df)
+# external_model_coef = Econometrics.coef(external_model_econometrics)
+# beta_hat_external_model_econometrics = reshape(external_model_coef, (2, 3))
+# Test.@test all(isapprox.(β_hat, beta_hat_external_model_econometrics; atol = 1e-2))
+# external_model_absolute_error = abs.(β_hat - beta_hat_external_model_econometrics)
+# external_model_square_error = abs2.(β_hat - beta_hat_external_model_econometrics)
+# external_model_absolute_error_proportional = external_model_absolute_error ./ abs.(beta_hat_external_model_econometrics)
+# external_model_square_error_proportional = external_model_square_error ./ abs.(beta_hat_external_model_econometrics)
+# Test.@test sum(external_model_absolute_error) < 0.07
+# Test.@test sum(external_model_square_error) < 0.001
+# Test.@test sum(external_model_absolute_error_proportional) < 0.04
+# Test.@test sum(external_model_square_error_proportional) < 1e-4
+# Test.@test maximum(external_model_absolute_error) < 0.01
+# Test.@test maximum(external_model_square_error) < 1e-4
+# Test.@test maximum(absolute_error_proportional) < 0.1
+# Test.@test maximum(external_model_square_error_proportional) < 1e-4
+# Test.@test Statistics.mean(external_model_absolute_error) < 0.01
+# Test.@test Statistics.mean(external_model_square_error) < 1e-4
+# Test.@test Statistics.mean(external_model_absolute_error_proportional) < 0.01
+# Test.@test Statistics.mean(external_model_square_error_proportional) < 1e-4
 
 # coverage for the "failed to converge" code paths
 β_hat_initial_guess = zeros(size_β)
