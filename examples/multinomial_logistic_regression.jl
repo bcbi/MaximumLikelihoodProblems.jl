@@ -29,7 +29,12 @@ function (problem::MultinomialLogisticRegression)(θ)
 end
 
 N = 10_000
+
+## X has two columns
+## the first column (the column of all ones) is the intercept
+## the second column is a covariate
 X = hcat(ones(N), randn(N))
+
 size_β = (2, 3)
 β_true = [1.0 2.0 3.0; 4.0 5.0 6.0]
 η_true = X * hcat(zeros(2), β_true)
