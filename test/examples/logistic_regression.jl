@@ -1,10 +1,11 @@
+import GLM
 import Statistics
 import Test
 
 β_true = [1.0, 2.0]
 
-@show β_true
-@show β_hat
+# @show β_true
+# @show β_hat
 
 Test.@test typeof(β_hat) == typeof(β_true)
 Test.@test ndims(β_hat) == ndims(β_true)
@@ -25,3 +26,6 @@ Test.@test Statistics.mean(absolute_error) < 0.070
 Test.@test Statistics.mean(square_error) < 0.007
 Test.@test Statistics.mean(absolute_error_proportional) < 0.050
 Test.@test Statistics.mean(square_error_proportional) < 0.010
+external_model_glm = GLM.glm(X, y, GLM.Binomial(), GLM.LogitLink())
+beta_hat_external_model_glm = GLM.coef(external_model_glm)
+Test.@test isapprox(β_hat, beta_hat_external_model_glm)

@@ -9,6 +9,7 @@ Test.@testset "examples" begin
         include(joinpath(test_directory,
                          "examples",
                          "linear_regression.jl"))
+
     end
 
     Test.@testset "logistic regression" begin
