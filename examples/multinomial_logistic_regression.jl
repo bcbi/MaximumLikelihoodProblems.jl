@@ -20,7 +20,7 @@ function (problem::MultinomialLogisticRegression)(θ)
     β = θ.β
 
     num_rows = size(X, 1)
-    num_covariates = size(β, 1) ## `size(β, 1)` is equal to `size(X, 2)`
+    num_covariates = size(β, 1) # `size(β, 1)` is equal to `size(X, 2)`
     num_classes = size(β, 2) + 1
 
     ## the first column of all zeros corresponds to the base class
