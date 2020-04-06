@@ -29,7 +29,13 @@ function (problem::LinearRegression)(θ)
 end
 
 N = 10_000
-X = hcat(ones(N), randn(N, 2))
+
+## X has three columns
+## the first column (the column of all ones) is the intercept
+## the second column is the first covariate
+## the third column is the second covariate
+X = hcat(ones(N), randn(N), randn(N))
+
 size_β = (3,)
 β_true = [1.0, 2.0, -1.0]
 σ_true = 0.5

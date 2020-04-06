@@ -21,6 +21,7 @@ function (problem::MultinomialLogisticRegression)(θ)
     num_classes = size(β, 2) + 1
 
     ## the first column of all zeros corresponds to the base class
+    ## i.e. the coefficient β₀ for the base class is always fixed to be zero
     η = X * hcat(zeros(num_covariates), β)
 
     μ = NNlib.softmax(η; dims=2)
@@ -29,7 +30,12 @@ function (problem::MultinomialLogisticRegression)(θ)
 end
 
 N = 10_000
+
+## X has two columns
+## the first column (the column of all ones) is the intercept
+## the second column is a covariate
 X = hcat(ones(N), randn(N))
+
 size_β = (2, 3)
 β_true = [1.0 2.0 3.0; 4.0 5.0 6.0]
 η_true = X * hcat(zeros(2), β_true)
