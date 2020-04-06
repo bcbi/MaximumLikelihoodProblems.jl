@@ -21,6 +21,7 @@ function (problem::MultinomialLogisticRegression)(θ)
     num_classes = size(β, 2) + 1
 
     ## the first column of all zeros corresponds to the base class
+    ## i.e. the coefficient β₀ for the base class is always fixed to be zero
     η = X * hcat(zeros(num_covariates), β)
 
     μ = NNlib.softmax(η; dims=2)
