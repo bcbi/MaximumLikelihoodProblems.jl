@@ -19,8 +19,8 @@ function (problem::LogisticRegression)(θ)
     Parameters.@unpack β = θ
     η = X*β
     μ = StatsFuns.logistic.(η)
-    loglik = sum(Distributions.logpdf.(Distributions.Bernoulli.(μ), y))
-    return loglik
+    log_likelihood = sum(Distributions.logpdf.(Distributions.Bernoulli.(μ), y))
+    return log_likelihood
 end
 
 N = 10_000

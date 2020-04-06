@@ -24,8 +24,8 @@ function (problem::MultinomialLogisticRegression)(θ)
     η = X * hcat(zeros(num_covariates), β)
 
     μ = NNlib.softmax(η; dims=2)
-    loglik = sum([Distributions.logpdf(Distributions.Multinomial(1, μ[i, :]), y[i, :]) for i = 1:num_rows])
-    return loglik
+    log_likelihood = sum([Distributions.logpdf(Distributions.Multinomial(1, μ[i, :]), y[i, :]) for i = 1:num_rows])
+    return log_likelihood
 end
 
 N = 10_000
