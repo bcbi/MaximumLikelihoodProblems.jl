@@ -7,7 +7,7 @@
 
 A framework for formulating likelihood problems and solving them with maximum likelihood estimation (MLE).
 
-Please see the [documentation](https://bcbi.github.io/MaximumLikelihoodProblems.jl/dev/).
+Please see the [documentation](https://bcbi.github.io/MaximumLikelihoodProblems.jl/stable/).
 
 ## You may also be interested in:
 1. [DynamicHMC.jl](https://github.com/tpapp/DynamicHMC.jl)
