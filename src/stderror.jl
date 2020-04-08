@@ -1,6 +1,6 @@
 @inline function stderror_vector(m::AbstractMatrix)
     diagonal_entries = _get_diagonal_entries(m)
-    result = 1 ./ sqrt.(diagonal_entries)
+    result = sqrt.(diagonal_entries)
     return result
 end
 

@@ -1,6 +1,7 @@
 @inline function observed_information_matrix(d::Derivatives)
     hess_mat = d.hessian_matrix
-    return -hess_mat
+    result = -1 * _pseudoinverse(hess_mat)
+    return result
 end
 
 @inline function observed_information_matrix(transformed_gradient_problem,
