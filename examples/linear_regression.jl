@@ -65,8 +65,8 @@ transformed_gradient_problem = LogDensityProblems.ADgradient(:ForwardDiff,
 # θ_hat:
 
 θ_hat = MaximumLikelihoodProblems.fit(transformed_gradient_problem,
-                                      θ_hat_initial;
-                                      learning_rate = 1e-6)
+                                          θ_hat_initial;
+                                          learning_rate = 1e-6)
 
 # β_hat:
 
@@ -75,3 +75,27 @@ transformed_gradient_problem = LogDensityProblems.ADgradient(:ForwardDiff,
 # σ_hat:
 
 σ_hat = θ_hat[:σ]
+
+# get the standard errors:
+
+β_hat_stderror = MaximumLikelihoodProblems.stderror(transformed_gradient_problem,
+                                                        θ_hat)[:β]
+
+# get 95% confidence intervals:
+
+β_hat_95_CI_lower, β_hat_95_CI_upper = getindex.(MaximumLikelihoodProblems.confint(transformed_gradient_problem,
+                                                                                                   θ_hat;
+                                                                                                   level = 0.95),
+                                                 :β)
+
+# β_hat:
+
+β_hat
+
+# lower bound of 95% confidence interval for β_hat:
+
+β_hat_95_CI_lower
+
+# upper bound of 95% confidence interval for β_hat:
+
+β_hat_95_CI_upper

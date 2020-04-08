@@ -3,6 +3,7 @@ import MaximumLikelihoodProblems
 import CategoricalArrays
 import DataFrames
 import Econometrics
+import LinearAlgebra
 import Statistics
 import Test
 
@@ -65,22 +66,31 @@ external_formula = Econometrics.@formula(y ~ 1 + X_2)
 # Test.@test Statistics.mean(external_model_absolute_error_proportional) < 0.01
 # Test.@test Statistics.mean(external_model_square_error_proportional) < 1e-4
 
+gradient_vector_at_θ_hat = MaximumLikelihoodProblems.gradient_vector(transformed_gradient_problem,
+                                                                     θ_hat)
+Test.@test all(abs.(gradient_vector_at_θ_hat) .< 1e-4)
+hessian_matrix_at_θ_hat = MaximumLikelihoodProblems.hessian_matrix(transformed_gradient_problem,
+                                                                   θ_hat)
+Test.@test all(abs.(LinearAlgebra.adjoint(hessian_matrix_at_θ_hat) - hessian_matrix_at_θ_hat) .< 1e-10)
+Test.@test all(LinearAlgebra.eigvals(hessian_matrix_at_θ_hat) .< 0)
+Test.@test all(LinearAlgebra.eigvals(hessian_matrix_at_θ_hat) .< 100)
+
 # coverage for the "failed to converge" code paths
 β_hat_initial_guess = zeros(size_β)
 θ_hat_initial = (; β = β_hat_initial_guess)
 θ_hat = MaximumLikelihoodProblems.fit(transformed_gradient_problem,
-                                      θ_hat_initial;
-                                      max_iterations = 10,
-                                      throw_convergence_exception = false)
+                                          θ_hat_initial;
+                                          max_iterations = 10,
+                                          throw_convergence_exception = false)
 @info("The previous warning message (\"Warning: Failed to converge after 10 iterations\") was expected. It is a normal part of the test suite.")
 Test.@test_throws(MaximumLikelihoodProblems.ConvergenceException,
                   MaximumLikelihoodProblems.fit(transformed_gradient_problem,
-                                                θ_hat_initial;
-                                                max_iterations = 10,
-                                                throw_convergence_exception = true))
+                                                    θ_hat_initial;
+                                                    max_iterations = 10,
+                                                    throw_convergence_exception = true))
 @info("The previous error message (\"Error: Failed to converge after 10 iterations\") was expected. It is a normal part of the test suite.")
 Test.@test_throws(MaximumLikelihoodProblems.ConvergenceException,
                   MaximumLikelihoodProblems.fit(transformed_gradient_problem,
-                                                θ_hat_initial;
-                                                max_iterations = 10))
+                                                    θ_hat_initial;
+                                                    max_iterations = 10))
 @info("The previous error message (\"Error: Failed to converge after 10 iterations\") was expected. It is a normal part of the test suite.")

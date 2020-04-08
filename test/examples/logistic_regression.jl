@@ -1,4 +1,5 @@
 import GLM
+import LinearAlgebra
 import Statistics
 import Test
 
@@ -29,3 +30,12 @@ Test.@test Statistics.mean(square_error_proportional) < 0.010
 external_model_glm = GLM.glm(X, y, GLM.Binomial(), GLM.LogitLink())
 beta_hat_external_model_glm = GLM.coef(external_model_glm)
 Test.@test isapprox(β_hat, beta_hat_external_model_glm)
+
+gradient_vector_at_θ_hat = MaximumLikelihoodProblems.gradient_vector(transformed_gradient_problem,
+                                                                     θ_hat)
+Test.@test all(abs.(gradient_vector_at_θ_hat) .< 1e-4)
+hessian_matrix_at_θ_hat = MaximumLikelihoodProblems.hessian_matrix(transformed_gradient_problem,
+                                                                   θ_hat)
+Test.@test all(abs.(LinearAlgebra.adjoint(hessian_matrix_at_θ_hat) - hessian_matrix_at_θ_hat) .< 1e-10)
+Test.@test all(LinearAlgebra.eigvals(hessian_matrix_at_θ_hat) .< 0)
+Test.@test all(LinearAlgebra.eigvals(hessian_matrix_at_θ_hat) .< 100)

@@ -24,13 +24,13 @@ const default_tolerance = 1e-10
 
 See the documentation for fully worked-out examples.
 """
-function fit(transformed_gradient_problem,
-             theta_hat_initial;
-             learning_rate = default_learning_rate,
-             max_iterations = default_max_iterations,
-             show_progress_meter = default_show_progress_meter,
-             throw_convergence_exception = default_throw_convergence_exception,
-             tolerance = default_tolerance)
+@inline function fit(transformed_gradient_problem,
+                         theta_hat_initial;
+                         learning_rate = default_learning_rate,
+                         max_iterations = default_max_iterations,
+                         show_progress_meter = default_show_progress_meter,
+                         throw_convergence_exception = default_throw_convergence_exception,
+                         tolerance = default_tolerance)
     transformed_log_density = parent(transformed_gradient_problem)
     transformation = transformed_log_density.transformation
     theta_hat_initial_deepcopy = deepcopy(theta_hat_initial)
@@ -38,24 +38,24 @@ function fit(transformed_gradient_problem,
                                                                                theta_hat_initial_deepcopy)
     theta_hat_initial_deepcopy_inversetransformed_deepcopy = deepcopy(theta_hat_initial_deepcopy_inversetransformed)
     theta_hat_new_inversetransformed = _fit(transformed_gradient_problem,
-                                            theta_hat_initial_deepcopy_inversetransformed_deepcopy;
-                                            learning_rate = learning_rate,
-                                            max_iterations = max_iterations,
-                                            show_progress_meter = show_progress_meter,
-                                            throw_convergence_exception = throw_convergence_exception,
-                                            tolerance = tolerance)
+                                                theta_hat_initial_deepcopy_inversetransformed_deepcopy;
+                                                learning_rate = learning_rate,
+                                                max_iterations = max_iterations,
+                                                show_progress_meter = show_progress_meter,
+                                                throw_convergence_exception = throw_convergence_exception,
+                                                tolerance = tolerance)
     theta_hat_new = TransformVariables.transform(transformation,
                                                  theta_hat_new_inversetransformed)
     return theta_hat_new
 end
 
-function _fit(transformed_gradient_problem,
-              theta_hat_initial;
-              learning_rate,
-              max_iterations,
-              show_progress_meter,
-              throw_convergence_exception,
-              tolerance)
+@inline function _fit(transformed_gradient_problem,
+                          theta_hat_initial;
+                          learning_rate,
+                          max_iterations,
+                          show_progress_meter,
+                          throw_convergence_exception,
+                          tolerance)
     theta_hat_new = deepcopy(theta_hat_initial)
     if show_progress_meter
         progress = ProgressMeter.ProgressThresh(tolerance, "Maximizing:")

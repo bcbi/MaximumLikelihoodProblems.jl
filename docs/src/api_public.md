@@ -1,5 +1,11 @@
 # Public API
 
+```@index
+Pages   = ["api_public.md"]
+```
+
 ```@docs
-MaximumLikelihoodProblems.fit
+fit
+stderror
+confint
 ```

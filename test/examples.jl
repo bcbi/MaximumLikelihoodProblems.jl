@@ -17,6 +17,7 @@ Test.@testset "examples" begin
 
     Test.@testset "multinomial logistic regression" begin
         Random.seed!(123)
+        @info("This next test may take a while...")
         include(joinpath(examples_directory, "multinomial_logistic_regression.jl"))
         include(joinpath(test_directory, "examples", "multinomial_logistic_regression.jl"))
     end
