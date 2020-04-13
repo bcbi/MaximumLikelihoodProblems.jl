@@ -37,6 +37,8 @@ Test.@test MaximumLikelihoodProblems.Internal._is_approximately_zero(gradient_ve
 Test.@test MaximumLikelihoodProblems.Internal._is_approximately_hermitian(hessian_matrix_at_θ_hat)
 Test.@test MaximumLikelihoodProblems.Internal._is_approximately_negative_definite(hessian_matrix_at_θ_hat;
                                                                                   fuzz_factor = 10)
+Test.@test MaximumLikelihoodProblems.Internal._is_approximately_positive_definite(-hessian_matrix_at_θ_hat;
+                                                                                  fuzz_factor = 10)
 
 external_model_glm = GLM.glm(X, y, GLM.Binomial(), GLM.LogitLink())
 beta_hat_external_model_glm = GLM.coef(external_model_glm)
