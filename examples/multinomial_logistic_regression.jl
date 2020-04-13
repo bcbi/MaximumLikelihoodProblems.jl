@@ -57,10 +57,12 @@ transformed_gradient_problem = LogDensityProblems.ADgradient(:ForwardDiff,
 θ_hat_initial = (; β = β_hat_initial_guess)
 
 # θ_hat:
+# (I recommend changing the value of `show_progress_meter` to `true` so that
+# you can see the progress.)
 
 θ_hat = MaximumLikelihoodProblems.fit(transformed_gradient_problem,
                                       θ_hat_initial;
-                                      show_progress_meter = false)
+                                      show_progress_meter = false) # change this `false` to `true`
 
 # β_hat:
 

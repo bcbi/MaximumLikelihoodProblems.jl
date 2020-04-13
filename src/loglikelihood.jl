@@ -2,13 +2,13 @@ import LogDensityProblems
 import TransformVariables
 
 """
-    loglikelihood(transformed_gradient_problem, theta_hat)
+    loglikelihood(transformed_gradient_problem, theta)
 
-Return the value of the log likelihood function evaluated at `theta_hat`.
+Return the value of the log likelihood function evaluated at `theta`.
 
 # Arguments
 - `transformed_gradient_problem`
-- `theta_hat`
+- `theta`
 """
 function loglikelihood(transformed_gradient_problem,
                        theta)

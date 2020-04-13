@@ -1,2 +1,2 @@
-struct ConvergenceException
+struct ConvergenceException <: Exception
 end

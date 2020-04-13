@@ -1,3 +1,5 @@
+import MaximumLikelihoodProblems
+
 import GLM
 import Statistics
 import Test
@@ -38,6 +40,17 @@ Test.@test Statistics.mean(square_error) < 1e-3
 Test.@test Statistics.mean(absolute_error_proportional) < 0.007
 Test.@test Statistics.mean(square_error_proportional) < 1e-3
 
+gradient_vector_at_θ_hat = MaximumLikelihoodProblems.Internal.gradient_vector(transformed_gradient_problem,
+                                                                              θ_hat)
+hessian_matrix_at_θ_hat = MaximumLikelihoodProblems.Internal.hessian_matrix(transformed_gradient_problem,
+                                                                            θ_hat)
+Test.@test MaximumLikelihoodProblems.Internal._is_approximately_zero(gradient_vector_at_θ_hat)
+Test.@test MaximumLikelihoodProblems.Internal._is_approximately_hermitian(hessian_matrix_at_θ_hat)
+Test.@test MaximumLikelihoodProblems.Internal._is_approximately_negative_definite(hessian_matrix_at_θ_hat;
+                                                                                  fuzz_factor = 10)
+Test.@test MaximumLikelihoodProblems.Internal._is_approximately_positive_definite(-hessian_matrix_at_θ_hat;
+                                                                                  fuzz_factor = 10)
+
 n, p = size(X)
 beta_hat_ols = ( X' * X )\( X' * y )
 beta_hat_mle = beta_hat_ols
@@ -52,6 +65,7 @@ Test.@test isapprox(σ_hat, sigma_hat_ols; atol = 1e-4)
 Test.@test isapprox(σ_hat, sigma_hat_mle; atol = 1e-4)
 Test.@test isapprox(β_hat, beta_hat_ols)
 Test.@test isapprox(β_hat, beta_hat_mle)
+
 external_model_glm = GLM.lm(X, y)
 sigma_hat_external_model_glm = GLM.dispersion(external_model_glm)
 Test.@test isapprox(σ_hat, sigma_hat_external_model_glm; atol = 1e-4)
