@@ -11,6 +11,8 @@ const default_tolerance = 1e-10
 """
     fit(transformed_gradient_problem, theta_hat_initial; kwargs...)
 
+Find the maximum likelihood estimatator for the parameters `theta`.
+
 # Arguments
 - `transformed_gradient_problem`
 - `theta_hat_initial`
@@ -62,14 +64,14 @@ function _fit(transformed_gradient_problem,
     end
     for iter = 1:max_iterations
         theta_hat_old = theta_hat_new
-        loglikelihood, gradient = LogDensityProblems.logdensity_and_gradient(transformed_gradient_problem,
-                                                                             theta_hat_old)
+        log_likelihood_value, gradient = LogDensityProblems.logdensity_and_gradient(transformed_gradient_problem,
+                                                                                    theta_hat_old)
         update = learning_rate * gradient
         theta_hat_new = theta_hat_old + update
         update_norm = sum(abs, update)
         if show_progress_meter
             showvalues = [(:iteration, iter),
-                          (:loglikelihood, loglikelihood)]
+                          (:loglikelihood, log_likelihood_value)]
             ProgressMeter.update!(progress,
                                   update_norm;
                                   showvalues = showvalues)
