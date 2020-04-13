@@ -70,3 +70,7 @@ transformed_gradient_problem = LogDensityProblems.ADgradient(:ForwardDiff,
 
 num_covariates = size(β_hat, 1)
 β_hat_with_base_class = hcat(zeros(num_covariates), β_hat)
+
+# Value of the log likelihood function evaluated at θ_hat:
+
+MaximumLikelihoodProblems.loglikelihood(transformed_gradient_problem, θ_hat)

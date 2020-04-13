@@ -75,3 +75,7 @@ transformed_gradient_problem = LogDensityProblems.ADgradient(:ForwardDiff,
 # σ_hat:
 
 σ_hat = θ_hat[:σ]
+
+# Value of the log likelihood function evaluated at θ_hat:
+
+MaximumLikelihoodProblems.loglikelihood(transformed_gradient_problem, θ_hat)
