@@ -31,6 +31,15 @@ Test.@test Statistics.mean(square_error) < 0.0095
 Test.@test Statistics.mean(absolute_error_proportional) < 0.05
 Test.@test Statistics.mean(square_error_proportional) < 0.0055
 
+gradient_vector_at_θ_hat = MaximumLikelihoodProblems.Internal.gradient_vector(transformed_gradient_problem,
+                                                                              θ_hat)
+hessian_matrix_at_θ_hat = MaximumLikelihoodProblems.Internal.hessian_matrix(transformed_gradient_problem,
+                                                                            θ_hat)
+Test.@test MaximumLikelihoodProblems.Internal._is_approximately_zero(gradient_vector_at_θ_hat)
+Test.@test MaximumLikelihoodProblems.Internal._is_approximately_hermitian(hessian_matrix_at_θ_hat)
+Test.@test MaximumLikelihoodProblems.Internal._is_approximately_negative_definite(hessian_matrix_at_θ_hat;
+                                                                                  fuzz_factor = 10)
+
 external_df = DataFrames.DataFrame()
 external_df[!, :X_2] = X[:, 2]
 n = size(X, 1)
