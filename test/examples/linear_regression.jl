@@ -48,6 +48,8 @@ Test.@test MaximumLikelihoodProblems.Internal._is_approximately_zero(gradient_ve
 Test.@test MaximumLikelihoodProblems.Internal._is_approximately_hermitian(hessian_matrix_at_θ_hat)
 Test.@test MaximumLikelihoodProblems.Internal._is_approximately_negative_definite(hessian_matrix_at_θ_hat;
                                                                                   fuzz_factor = 10)
+Test.@test MaximumLikelihoodProblems.Internal._is_approximately_positive_definite(-hessian_matrix_at_θ_hat;
+                                                                                  fuzz_factor = 10)
 
 n, p = size(X)
 beta_hat_ols = ( X' * X )\( X' * y )
