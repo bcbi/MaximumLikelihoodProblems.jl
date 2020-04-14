@@ -1,5 +1,6 @@
 import MaximumLikelihoodProblems
 
+import LinearAlgebra
 import Random
 import Statistics
 import Test
@@ -13,8 +14,8 @@ test_directory = joinpath(root_directory, "test")
 Test.@testset "MaximumLikelihoodProblems.jl" begin
     Test.@testset "linear_algebra.jl" begin
         Test.@testset "_pseudoinverse" begin
-            Test.@test _pseudoinverse([1 2; 3 4]) == LinearAlgebra.inv([1 2; 3 4])
-            Test.@test _pseudoinverse([0 0; 0 0]) == [0 0; 0 0]
+            Test.@test MaximumLikelihoodProblems._pseudoinverse([1 2; 3 4]) == LinearAlgebra.inv([1 2; 3 4])
+            Test.@test MaximumLikelihoodProblems._pseudoinverse([0 0; 0 0]) == [0 0; 0 0]
         end
     end
     
