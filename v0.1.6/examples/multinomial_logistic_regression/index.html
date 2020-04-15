@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Multinomial logistic regression · MaximumLikelihoodProblems.jl</title><link href="https://fonts.googleapis.com/css?family=Lato|Roboto+Mono" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit">MaximumLikelihoodProblems.jl</span></div><form class="docs-search" action="../../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../../">Home</a></li><li><a class="tocitem" href="../linear_regression/">Linear regression</a></li><li><a class="tocitem" href="../logistic_regression/">Logistic regression</a></li><li class="is-active"><a class="tocitem" href>Multinomial logistic regression</a></li><li><a class="tocitem" href="../../api_public/">Public API</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>Multinomial logistic regression</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Multinomial logistic regression</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://github.com/bcbi/MaximumLikelihoodProblems.jl/blob/master/examples/multinomial_logistic_regression.jl" title="Edit on GitHub"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch">Edit on GitHub</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h1 id="Multinomial-logistic-regression-1"><a class="docs-heading-anchor" href="#Multinomial-logistic-regression-1">Multinomial logistic regression</a><a class="docs-heading-anchor-permalink" href="#Multinomial-logistic-regression-1" title="Permalink"></a></h1><pre><code class="language-julia">import MaximumLikelihoodProblems
+
+import Distributions
+import ForwardDiff
+import LogDensityProblems
+import NNlib
+import TransformVariables
+
+struct MultinomialLogisticRegression{Ty, TX}
+    y::Ty
+    X::TX
+end
+
+function (problem::MultinomialLogisticRegression)(θ)
+    y = problem.y
+    X = problem.X
+
+    β = θ.β
+
+    num_rows = size(X, 1)
+    num_covariates = size(β, 1) # `size(β, 1)` is equal to `size(X, 2)`
+    num_classes = size(β, 2) + 1
+
+    # the first column of all zeros corresponds to the base class
+    # i.e. the coefficient β₀ for the base class is always fixed to be zero
+    β_with_base_class = hcat(zeros(num_covariates), β)
+    η = X * β_with_base_class
+
+    μ = NNlib.softmax(η; dims=2)
+    log_likelihood = sum([Distributions.logpdf(Distributions.Multinomial(1, μ[i, :]), y[i, :]) for i = 1:num_rows])
+    return log_likelihood
+end
+
+N = 10_000
+
+# the first column (the column of all ones) is the intercept
+X = hcat(ones(N), randn(N))
+
+size_β = (2, 3)
+β_true = [1.0 2.0 3.0; 4.0 5.0 6.0]
+num_covariates = size(β_true, 1)
+β_true_with_base_class = hcat(zeros(num_covariates), β_true)
+η_true = X * β_true_with_base_class
+μ_true = NNlib.softmax(η_true; dims=2)
+y = vcat([rand(Distributions.Multinomial(1, μ_true[i,:]))&#39; for i in 1:N]...)
+
+problem = MultinomialLogisticRegression(y, X)
+transformation = TransformVariables.as((β = TransformVariables.as(Array, size_β), ))
+transformed_problem = LogDensityProblems.TransformedLogDensity(transformation,
+                                                               problem)
+transformed_gradient_problem = LogDensityProblems.ADgradient(:ForwardDiff,
+                                                             transformed_problem)
+
+β_hat_initial_guess = zeros(size_β)
+θ_hat_initial = (; β = β_hat_initial_guess)</code></pre><pre><code class="language-none">(β = [0.0 0.0 0.0; 0.0 0.0 0.0],)</code></pre><p>θ<em>hat: (I recommend changing the value of `show</em>progress_meter<code>to</code>true` so that you can see the progress.)</p><pre><code class="language-julia">θ_hat = MaximumLikelihoodProblems.fit(transformed_gradient_problem,
+                                      θ_hat_initial;
+                                      show_progress_meter = false) # change this `false` to `true`</code></pre><pre><code class="language-none">(β = [0.9575972848620831 2.02295593732928 2.9920377512384904; 3.9787586087579543 5.003698188645785 6.0448436626205355],)</code></pre><p>β_hat:</p><pre><code class="language-julia">β_hat = θ_hat[:β]</code></pre><pre><code class="language-none">2×3 Array{Float64,2}:
+ 0.957597  2.02296  2.99204
+ 3.97876   5.0037   6.04484</code></pre><p>β_hat_with_base_class:</p><pre><code class="language-julia">num_covariates = size(β_hat, 1)
+β_hat_with_base_class = hcat(zeros(num_covariates), β_hat)</code></pre><pre><code class="language-none">2×4 Array{Float64,2}:
+ 0.0  0.957597  2.02296  2.99204
+ 0.0  3.97876   5.0037   6.04484</code></pre><p>Value of the log likelihood function evaluated at θ_hat:</p><pre><code class="language-julia">MaximumLikelihoodProblems.loglikelihood(transformed_gradient_problem, θ_hat)</code></pre><pre><code class="language-none">-6777.968835061336</code></pre><hr/><p><em>This page was generated using <a href="https://github.com/fredrikekre/Literate.jl">Literate.jl</a>.</em></p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../logistic_regression/">« Logistic regression</a><a class="docs-footer-nextpage" href="../../api_public/">Public API »</a></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> on <span class="colophon-date" title="Wednesday 15 April 2020 00:26">Wednesday 15 April 2020</span>. Using Julia version 1.4.0.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
