@@ -14,7 +14,7 @@ TransformVariables = "84d833dd-6860-57f9-a1a7-6da5db126cff"
 [compat]
 CategoricalArrays = "0.7"
 DataFrames = "0.20"
-Distributions = "0.23"
+Distributions = "0.23, 0.24"
 Econometrics = "0.2"
 ForwardDiff = "0.10"
 GLM = "1.3"
